@@ -1,0 +1,227 @@
+WEEK 8 
+Folder name : jar
+File Name : jar.py
+soluiton :
+class Jar:
+    def __init__(self, capacity=12):
+        self.capacity = capacity
+        self._size = 0
+
+    def __str__(self):
+        return "🍪" * self._size
+
+    def deposit(self, n):
+        self.size += n
+
+    def withdraw(self, n):
+        self.size -= n
+
+    @property
+    def capacity(self):
+        return self._capacity
+
+    @capacity.setter
+    def capacity(self, n):
+        if n < 0:
+            raise ValueError("Capacity isn't non-negative")
+
+        self._capacity = n
+
+    @property
+    def size(self):
+        return self._size
+
+    @size.setter
+    def size(self, n):
+        if n > self._capacity:
+            raise ValueError("Adding more cookies than max capacity")
+        elif n < 0:
+            raise ValueError("Not enough cookies to remove")
+
+        self._size = n
+
+File name : test_jar.py
+Soluion 
+from pytest import raises
+from jar import Jar
+
+
+def test_init():
+    jar = Jar()
+    assert jar.capacity == 12
+    jar = Jar(50)
+    assert jar.capacity == 50
+
+
+def test_deposit():
+    jar = Jar()
+
+    jar.deposit(2)
+    assert jar.size == 2
+    jar.deposit(10)
+    assert jar.size == 12
+
+    with raises(ValueError):
+        jar.deposit(5)
+
+
+def test_withdraw():
+    jar = Jar()
+    jar.deposit(12)
+
+    jar.withdraw(6)
+    assert jar.size == 6
+    jar.withdraw(3)
+    assert jar.size == 3
+
+    with raises(ValueError):
+        jar.withdraw(12)
+
+
+def test_str():
+    jar = Jar()
+
+    jar.deposit(5)
+    assert str(jar) == "🍪🍪🍪🍪🍪"
+    jar.deposit(5)
+    assert str(jar) == "🍪🍪🍪🍪🍪🍪🍪🍪🍪🍪"
+
+Folder Name :seasons
+File Name : seasons.py 
+Solution 
+
+from math import log10, trunc
+from datetime import date
+from re import fullmatch
+from sys import exit
+
+
+class Number:
+    _ones = {
+        0: '', 1: 'one', 2: 'two', 3: 'three', 4: 'four',
+        5: 'five', 6: 'six', 7: 'seven', 8: 'eight', 9: 'nine',
+        10: 'ten', 11: 'eleven', 12: 'twelve', 13: 'thirteen', 14: 'fourteen',
+        15: 'fifteen', 16: 'sixteen', 17: 'seventeen', 18: 'eighteen', 19: 'nineteen'
+    }
+    _tens = {
+        2: 'twenty', 3: 'thirty', 4: 'forty', 5: 'fifty',
+        6: 'sixty', 7: 'seventy', 8: 'eighty', 9: 'ninety'
+    }
+    _illions = {
+        1: 'thousand', 2: 'million', 3: 'billion'
+    }
+
+    @classmethod
+    def to_word(cls, number):
+        places = cls._split_number(number)
+        length = len(places)
+
+        output = ""
+
+        for idx, num in enumerate(places):
+            hundreds = num // 100
+            tens = num % 100
+
+            if hundreds:
+                output += f"{cls._ones[hundreds]} hundred "
+
+            if tens:
+                if 0 <= tens < 20:
+                    output += f"{cls._ones[tens]} "
+                else:
+                    output += f"{cls._tens[cls._get_digit(tens, 1)]}"
+
+                    if tens % 10 != 0:
+                        output += f"-{cls._ones[cls._get_digit(tens, 0)]} "
+
+            if idx + 1 != length:
+                output += f"{cls._illions[length - idx - 1]}, "
+
+        return output.rstrip()
+
+    @classmethod
+    def _split_number(cls, number):
+        digits = []
+
+        for i in range(0, trunc(log10(number) + 1), 3):
+            num = 0
+
+            for j in range(0, 3):
+                n = cls._get_digit(number, i + j)
+                num += n * 10 ** j
+
+            digits.insert(0, num)
+
+        return tuple(digits)
+
+    @classmethod
+    def _get_digit(cls, number, nth_digit):
+        return (number % 10 ** (nth_digit + 1) - number % 10 ** nth_digit) // 10 ** nth_digit
+
+
+def main():
+    birth = input("Date of birth: ")
+
+    if not fullmatch(r"([0-9]{4})-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])", birth):
+        exit("Invalid date format")
+
+    birthdate = date.fromisoformat(birth)
+    timespan = date.today() - birthdate
+    minutes = round(timespan.total_seconds() / 60)
+
+    print(f"{Number.to_word(minutes)} minutes".capitalize())
+
+
+if __name__ == "__main__":
+    main()
+
+File name : test_seasons.py 
+Solution 
+from seasons import Number
+
+
+def test_valid_numbers():
+    assert Number.to_word(1) == "one"
+    assert Number.to_word(2) == "two"
+    assert Number.to_word(3) == "three"
+    assert Number.to_word(123) == "one hundred twenty-three"
+    assert Number.to_word(456789) == "four hundred fifty-six thousand, seven hundred eighty-nine"
+
+Folder Name :shirtificate
+File Name :shirtificate.png
+Solution 
+Create a file with this name and save it .
+File Name :shirtificate.py 
+Solution 
+from fpdf import FPDF
+class PDF():
+    def __init__(self, txt):
+        self._pdf = FPDF()
+        self._pdf.add_page()
+        self._pdf.set_font("helvetica", size=48)
+
+        self._pdf.cell(w=0, h=60, txt="CS50 Shirtificate",
+                       new_x="LMARGIN", new_y="NEXT", align="C")
+        self._pdf.image("shirtificate.png", w=self._pdf.epw,
+                        alt_text="CS50 Shirtificate")
+
+        self._pdf.set_font_size(25)
+        self._pdf.set_text_color(255, 255, 255)
+        self._pdf.text(x=55, y=140, txt=f"{txt} took CS50")
+
+    def save(self, name):
+        self._pdf.output(name)
+
+
+def main():
+    name = input("Name: ")
+
+    pdf = PDF(name)
+    pdf.save("shirtificate.pdf")
+
+
+if __name__ == "__main__":
+    main()
+
+
+

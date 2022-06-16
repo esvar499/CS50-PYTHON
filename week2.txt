@@ -1,0 +1,120 @@
+Week 2 
+Program 1
+
+def main():
+    text = input("Enter a camelCase variable: ")
+    print(snake_case(text))
+
+
+def snake_case(text):
+    new_text = ""
+    for i in range(len(text)):
+        if i == 0:
+            new_text += text[i].lower()
+        elif text[i].isupper():
+            new_text += "_" + text[i].lower()
+        else:
+            new_text += text[i]
+    return new_text
+
+
+if __name__ == "__main__":
+    main()
+
+Program 2
+
+def main():
+    amount_due = 50
+    while amount_due > 0:
+        print("Amount Due: ", amount_due)
+        coin_inserted = int(input("Insert Coin: "))
+        if coin_inserted == 25 or coin_inserted == 10 or coin_inserted == 5:
+            amount_due -= coin_inserted
+    print("Change Owed: ", abs(amount_due))
+
+
+if __name__ == "__main__":
+    main()
+
+Program 3
+
+def main():
+    input_text = input("Input: ")
+    for char in input_text:
+        if char.upper() not in ['A', 'E', 'I', 'O', 'U']:
+            print(char, end='')
+
+
+if __name__ == "__main__":
+    main()
+
+Prorgam 4
+
+import string
+
+
+def main():
+    plate = input("Plate: ").upper()
+    if is_valid(plate):
+        print("Valid")
+    else:
+        print("Invalid")
+
+
+def is_valid(s):
+    if not s[:2].isalpha():
+        return False
+
+    if not 2 <= len(s) <= 6:
+        return False
+
+    for i in range(len(s)):
+        char = s[i]
+        if char.isdigit():
+            if char == '0':
+                return False
+            elif not s[i:].isdigit():
+                return False
+            break
+
+    if string.punctuation in s or string.whitespace in s:
+        return False
+
+    return True
+
+
+if __name__ == "__main__":
+    main()
+
+Program 5
+
+def main():
+    fruit_calories = {
+        "apple": 130,
+        "avocado": 50,
+        "banana": 110,
+        "cantaloupe": 50,
+        "grapefruit": 60,
+        "grapes": 90,
+        "honeydew melon": 50,
+        "kiwifruit": 90,
+        "lemon": 15,
+        "lime": 20,
+        "nectarine": 60,
+        "orange": 80,
+        "peach": 60,
+        "pear": 100,
+        "pineapple": 50,
+        "plum": 70,
+        "strawberries": 50,
+        "sweet cherries": 100,
+        "tangerine": 50,
+        "watermelon": 80,
+    }
+    item = input("Item: ").lower()
+    if item in fruit_calories:
+        print("Calories: ", fruit_calories[item])
+
+
+if __name__ == "__main__":
+    main()

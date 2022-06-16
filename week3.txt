@@ -1,0 +1,96 @@
+Program 1
+
+while True:
+    fuel = input("Fraction: ")
+    try:
+        numerator, denominator = fuel.split("/")
+        new_numerator = int(numerator)
+        new_denominator = int(denominator)
+        p = new_numerator / new_denominator
+        if p <= 1:
+            break
+    except (ValueError, ZeroDivisionError):
+        pass
+new_p = int(p * 100)
+if new_p <= 1:
+    print("E")
+elif new_p >= 99:
+    print("F")
+else:
+    print(f"{new_p}%")
+
+
+Program 2
+
+menu = {
+    "baja taco": 4.00,
+    "burrito": 7.50,
+    "bowl": 8.50,
+    "nachos": 11.00,
+    "quesadilla": 8.50,
+    "super burrito": 8.50,
+    "super quesadilla": 9.50,
+    "taco": 3.00,
+    "tortilla salad": 8.00
+}
+
+price = 0
+
+while True:
+    try:
+        item = input("Item: ")
+        if item.lower() in menu:
+            price += float(menu[item.lower()])
+            print("Total: $", end="")
+            print("{:.2f}".format(round(price,2)))
+    except EOFError:
+        print()
+        break
+
+Program 3
+
+grocery = {}
+
+while True:
+    try:
+        item = input()
+        if item.lower() in grocery:
+            grocery[item.lower()] += 1
+        else:
+            grocery[item.lower()] = 1
+    except EOFError:
+        for key in sorted(grocery.keys()):
+            print(grocery[key], key.upper())
+        break
+
+
+Program 4 
+
+
+months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
+
+while True:
+    date = input("Date: ")
+    try:
+        month, day, year = date.split("/")
+        if (int(month) >= 1 and int(month) <= 12) and (int(day) >= 1 and int(day) <= 31):
+            break
+    except:
+        try:
+            x, y, year = date.split(" ")
+            for i in range(len(months)):
+                if x == months[i]:
+                    month = i + 1
+            day = y.replace(",", "")
+            if (int(month) >= 1 and int(month) <= 12) and (int(day) >= 1 and int(day) <= 31):
+                break
+        except:
+            print()
+            pass
+
+if int(month) < 10:
+    month = '0' + str(month)
+if int(day) < 10:
+    day = '0' + str(day)
+print(year + "-" + str(month) + "-" + str(day))
+

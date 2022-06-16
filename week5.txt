@@ -1,0 +1,270 @@
+Complete Testing my twttr :-
+ test_twttr.py:-
+from twttr import shorten
+
+
+def test_shorten():
+    """Shorten should remove all vowels in a string."""
+    assert shorten("aeiou") == ""
+    assert shorten("AEIOU") == ""
+    assert shorten("Shorten") == "Shrtn"
+    assert shorten("The rain in spain.") == "Th rn n spn."
+    assert shorten("1a2b3c4f5e") == "12b3c4f5"
+
+
+twttr.py:-
+vowels = ["a", "e", "i", "o", "u"]
+
+
+def main():
+    """Smwhr vr th rnbw!"""
+    word = str(input("Input: ").strip())
+    print(f"Output: {shorten(word)}")
+
+
+def shorten(word):
+    """Rmvs ll vwls"""
+    new_string = ""
+    # Goes through every letter in the word.
+    for letter in word:
+        if letter.lower() not in vowels:
+            new_string += letter
+
+    return new_string
+
+
+if __name__ == "__main__":
+    main()
+
+
+test_fuel.py:-
+
+import pytest
+from fuel import convert, gauge
+
+
+def test_convert():
+    """Convert a string to a X/Y fraction with its numerator and denominator represented
+    by an integer between 0 and 100, inclusive."""
+    assert convert("0/1") == 0
+    assert convert("1/1") == 100
+    assert convert("1/2") == 50
+    assert convert("1/100") == 1
+
+    # Check if code catches attempted zero division
+    with pytest.raises(ZeroDivisionError):
+        convert("1/0")
+
+    # Check if code catches non-integers
+    with pytest.raises(ValueError):
+        convert("x/y")
+
+
+def test_gauge():
+    """Given a percentage as an integer between 1 and 99, gauge should return fuel reserve
+    as a percentage. If below 1 percent or above 99%, display 'E' or 'F', respectively."""
+    assert gauge(0) == "E"
+    assert gauge(1) == "E"
+    assert gauge(2) == "2%"
+    assert gauge(50) == "50%"
+    assert gauge(98) == "98%"
+    assert gauge(99) == "F"
+    assert gauge(100) == "F"
+
+fuel.py:-
+
+def main():
+    """Hit the road, jack!"""
+    while True:
+        # How much fuel is in the tank?
+        try:
+            fraction = str(input("Fraction: ").strip())
+            print(gauge(convert(fraction)))
+            break
+        except (ValueError, ZeroDivisionError, UnboundLocalError):
+            continue
+
+
+def convert(fraction):
+    """Convert a string to a X/Y fraction with its numerator and denominator represented
+    by an integer between 0 and 100, inclusive. If X or Y is not an integer, raise a ValueError.
+    If Y is 0, raise a ZeroDivisionError."""
+    if "/" in fraction:
+        x, y = fraction.split("/", 1)
+    else:
+        raise UnboundLocalError("Not a valid fraction.")
+
+    # Check that both X and Y are integers
+    if x.isdigit() and y.isdigit():
+        # Check that X isn't larger than Y and that Y isn't zero
+        if int(x) <= int(y) and int(y) != 0:
+            percentage = (int(x) / int(y)) * 100
+            return percentage
+        else:
+            raise ZeroDivisionError("X is larger than Y")
+    else:
+        raise ValueError("Not an integer")
+
+
+def gauge(percentage):
+    """Given a percentage as an integer between 1 and 99, gauge should return fuel reserve
+    as a percentage. If below 1 percent or above 99%, display 'E' or 'F', respectively."""
+    if int(percentage) >= 99:
+        return "F"
+    elif int(percentage) < 99 and int(percentage) > 1:
+        return f"{percentage:.0f}%"
+    else:
+        return "E"
+
+
+if __name__ == "__main__":
+    main()
+
+test_plates.py:-
+
+from plates import is_valid
+
+
+def test_startwith():
+    """Vanity plates must start with at least two letters."""
+    assert is_valid("1") == False
+    assert is_valid("22") == False
+    assert is_valid("AA") == True
+
+
+def test_minmax():
+    """Vanity plates may contain a maximum of 6 characters and a minimum of 2 characters."""
+    assert is_valid("A") == False
+    assert is_valid("ABCDEFG") == False
+    assert is_valid("ABCDEF") == True
+
+
+def test_numbers():
+    """Numbers cannot be used in the middle of a plate; they must come at the end."""
+    assert is_valid("123456") == False
+    assert is_valid("123ABC") == False
+    assert is_valid("XYZ012") == False
+    assert is_valid("AB12C3") == False
+    assert is_valid("AB12CA") == False
+    assert is_valid("ABC123") == True
+
+
+def test_blockedsymbols():
+    """No periods, spaces, or punctuation marks are allowed."""
+    assert is_valid("ABC?!-") == False
+    assert is_valid(". 12[]") == False
+    assert is_valid("/B^D3*") == False
+
+
+plates.py:-
+
+def main():
+    """Stand in line at the DMV?"""
+    plate = input("Plate: ").strip()
+    if is_valid(plate):
+        print("Valid")
+    else:
+        print("Invalid")
+
+
+def is_valid(s):
+    """2cool4Skool"""
+    s = str(s)
+
+    validated = ""
+    numcheck = 0
+
+    illegal_symbols = [
+        " ",
+        ".",
+        "?",
+        "!",
+        ",",
+        ":",
+        ";",
+        "(",
+        ")",
+        "[",
+        "]",
+        "'",
+        "-",
+        '"',
+        "/",
+        "\\",
+        "`",
+        "@",
+        "#",
+        "*",
+    ]
+    # “Numbers cannot be used in the middle of a plate; they must come at the end. For example, AAA222 would be an acceptable … vanity plate; AAA22A would not be acceptable. The first number used cannot be a ‘0’.”
+    # “No periods, spaces, or punctuation marks are allowed.”
+
+    # Check the following rules to validate the input
+    if len(s) >= 2 and len(s) <= 6:
+        if s[0].isalpha() and s[1].isalpha():
+            for ch in s:
+                if ch not in illegal_symbols:
+                    if ch.isnumeric() and numcheck == 0 and ch != "0":
+                        numcheck += 1
+                        validated += ch
+                    elif ch.isnumeric() and numcheck > 0:
+                        numcheck += 1
+                        validated += ch
+                    elif ch.isalpha() and numcheck < 1:
+                        validated += ch
+    else:
+        return False
+
+    # Let the caller know what's up
+    if validated == s:
+        return True
+    else:
+        return False
+
+
+if __name__ == "__main__":
+    main()
+
+test_bank.py:-
+from bank import value
+
+
+def test_value_casesensitivity():
+    """Returns 0 if input starts with “hello”, case-insensitively."""
+    assert value("hello") == 0
+    assert value("Hello") == 0
+
+
+def test_value_firstletter():
+    """Returns 20 if input starts with an “h” (but not “hello”)."""
+    assert value("howdy") == 20
+    assert value("Hail Zog!") == 20
+
+
+def test_value_failure():
+    """Returns 100 otherwise."""
+    assert value("whashappenin?") == 100
+    assert value("1# Customer!") == 100
+
+bank.py:-
+def main():
+    """Be friendly to our customer"""
+    greeting = input("Greeting: ").strip()
+    print(f"${value(greeting)}")
+
+
+def value(greeting):
+    """Check how much we owe the customer"""
+
+    if greeting.lower().startswith("hello"):
+        return 0
+    elif greeting.lower().startswith("h"):
+        return 20
+    else:
+        return 100
+
+
+if __name__ == "__main__":
+    main()
+
+
